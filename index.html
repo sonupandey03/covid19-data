@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid 19 Detail</title>
+    
+    <style>
+        html,body{
+            background-color:rgb(252, 87, 10);
+            padding: 0px;
+            margin: 0px;
+        }
+            .container{
+                height: 100vh;
+                display:flex;
+                flex-direction:column;
+                background-size: cover;
+                
+            }
+            .main-title{
+                width: 100%;
+                height: 19%;
+                margin-top: 2%;
+                color: cornsilk;
+                font-size: 45px;
+                letter-spacing: 6;
+            }
+            .select-country{
+                width:100% ;
+                height: 30%;
+            }
+            .country-name{
+                width: 50% ;
+                padding: 20px;
+                border-radius: 35px;
+                font-weight:bold;
+
+            }
+            .country-result{
+                width:100%;
+                display: flex;
+                margin-bottom: 1%;
+                justify-content: space-around;
+                align-items: center;
+                
+            }
+        .box{
+                width: 15% ;
+                padding: 50px;
+                height: 50%;
+                border-radius: 35px;
+                font-weight:bold;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color:whitesmoke;
+                box-shadow: blue;
+                border-color: cyan;
+                box-shadow:10px 12px 10px cyan ;
+                
+        } .box2{
+                width: 12% ;
+                padding: 50px;
+                height: 50%;
+                border-radius: 35px;
+                font-weight:bold;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color:whitesmoke;
+                box-shadow:10px 12px 10px cyan ;
+        }
+
+        .heading{
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-color: darkblue;
+                   }
+        @media(max-width:480px){
+            .container{
+                height: 100%;
+            }
+            .main-title{
+                margin-top: 5%;
+                font-size: 25px;
+                letter-spacing: 4px;
+                height: 12%;
+            }
+            .country-name{
+                margin-top: 5%;
+                width: 80%;
+            }
+            .country-result{
+                flex-direction: column;
+                margin-top: 5%;
+                
+            }
+            .box{
+                margin-bottom: 5%;
+                width: 60%;
+                border-color: rgb(250, 8, 8);
+                
+            }
+            .box2{
+                margin-bottom: 3%;
+                width: 20%;
+            
+            }
+           
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container" >
+<div class="main-title">
+   
+    <center>STAY HOME STAY SAFE  </center>
+    
+    <center><p><h>Select-Country</h7> </p></center>
+</div>
+
+<div class="Select-Country">
+    <center>
+        <select class="country-name" id="country_name"></select>
+
+    </center>
+
+</div>
+<div class="country-result">
+    
+   
+    <div class="box2">
+      <p class="heading" style="color :black">  DATE</p>
+      <p class="number" id="date">0</p></p>
+    </div>
+        
+   
+    
+</div>
+<div class="country-result">
+    <div class="box">
+      <p class="heading" style="color: black"> CONFRIMED CASE</p>
+      <p class="number" id="confrimed">0</p></p>
+    </div>
+    <div class="box">
+        <p class="heading" style="color:black"> RECORVED CASE</p>
+        <p class="number" id="recover">0</p></p>
+      </div>
+      <div class="box">
+        <p class="heading" style="color:black"> DEATH</p>
+        <p class="number" id="death">0</p></p>
+      </div>
+</div>
+<div class="country-result">
+    <div class="box">
+      <p class="heading" style="color: black">  NEW CONFRIMED CASE</p>
+      <p class="number" id="newconfrim">0</p></p>
+    </div>
+    <div class="box">
+        <p class="heading" style="color:black"> NEW RECORVED CASE</p>
+        <p class="number" id="newrecover">0</p></p>
+      </div>
+      <div class="box">
+        <p class="heading" style="color:black">  NEW DEATH</p>
+        <p class="number" id="Death">0</p></p>
+      </div>
+</div>
+
+
+    </div>
+    <script>
+        var commArr;
+        var  country_name=document.getElementById('country_name');
+        function fetchalldata(){
+            var request=new XMLHttpRequest();
+            request.open('GET','https://api.covid19api.com/summary');
+            request.send();
+            request.onload=function(){
+                commArr = JSON.parse(request.responseText);
+            fetchCountries(commArr.Countries);
+            }
+        }
+        function fetchCountries(countryData)
+        {
+            for (var i=0;i<countryData.length;i++)
+            {
+                var option=document.createElement('option');
+                option.innerHTML=countryData[i].Country;
+                option.value=countryData[i].Country;
+                if(countryData[i].Country==='India'){
+                    option.selected=true;
+                    displayResults(countryData[i]);
+                }
+                country_name.appendChild(option);
+            }
+        }
+        function displayResults(obj)
+        {
+            console.log(obj);
+            document.getElementById('confrimed').innerHTML=obj.TotalConfirmed;
+            document.getElementById('recover').innerHTML=obj.TotalRecovered;
+            document.getElementById('death').innerHTML=obj.TotalDeaths;
+            document.getElementById('newconfrim').innerHTML=obj.NewConfirmed;
+            document.getElementById('newrecover').innerHTML=obj.NewRecovered;
+            document.getElementById('Death').innerHTML=obj.NewDeaths;
+            document.getElementById('date').innerHTML=obj.Date;
+
+
+
+        }
+        country_name.addEventListener('change', function(event){
+            console.log(event.target.value)
+            for(var i=0;i<commArr.Countries.length;i++ )
+            {
+                if(commArr.Countries[i].Country== event.target.value)
+                {
+displayResults(commArr.Countries[i])
+                }
+            }
+        }) 
+        fetchalldata();
+
+    </script>
+</body>
+</html>
